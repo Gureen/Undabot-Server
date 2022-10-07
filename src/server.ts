@@ -1,32 +1,32 @@
-import express from 'express';
-import { ErrorModel } from './model';
+import express from "express";
+import { ErrorModel } from "./model";
 
 const app = express();
-const port = 4040;
-const fs = require('fs');
-const cors = require('cors');
+const port = process.env.PORT || 8080;
+const fs = require("fs");
+const cors = require("cors");
 
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 
-const path = require('path');
+const path = require("path");
 const surveyFormAnswers = require(path.join(
   __dirname,
-  './store/SurveyFormData.json'
+  "./store/SurveyFormData.json"
 ));
 
-app.use(cors({ origin: '*' }));
+app.use(cors({ origin: "*" }));
 
-app.get('/api/v1/survey', (request, response) => {
+app.get("/api/v1/survey", (request, response) => {
   fs.readFile(
-    path.join(__dirname, './store/SurveyFormData.json'),
-    'utf-8',
+    path.join(__dirname, "./store/SurveyFormData.json"),
+    "utf-8",
     (error: any, data: any) => {
       if (error) {
         return response.status(500).send({
           errors: [
             {
-              title: 'Internal Server Error',
+              title: "Internal Server Error",
               detail: "Something went wrong. We're working on it!",
             },
           ],
@@ -38,7 +38,7 @@ app.get('/api/v1/survey', (request, response) => {
   );
 });
 
-app.post('/api/v1/survey/:id/answers', (request, response) => {
+app.post("/api/v1/survey/:id/answers", (request, response) => {
   console.log(request.body);
 
   const body = request.body;
@@ -53,8 +53,8 @@ app.post('/api/v1/survey/:id/answers', (request, response) => {
       );
       if (!findQuestionAnswer) {
         errors.push({
-          source: { pointer: 'data/attributes/answers/' + q.questionId },
-          detail: 'The value is required.',
+          source: { pointer: "data/attributes/answers/" + q.questionId },
+          detail: "The value is required.",
         });
         return;
       }
@@ -62,13 +62,13 @@ app.post('/api/v1/survey/:id/answers', (request, response) => {
       let isValid = true;
 
       switch (q.questionType) {
-        case 'text':
+        case "text":
           isValid =
             findQuestionAnswer.answer !== null &&
             findQuestionAnswer.answer !== undefined &&
-            findQuestionAnswer.answer !== '';
+            findQuestionAnswer.answer !== "";
           break;
-        case 'rating':
+        case "rating":
           if (q.attributes) {
             let isAnswerBiggerThanMin = true;
             let isAnswerSmallerThanMax = true;
@@ -85,15 +85,15 @@ app.post('/api/v1/survey/:id/answers', (request, response) => {
             isValid =
               findQuestionAnswer.answer !== null &&
               findQuestionAnswer.answer !== undefined &&
-              typeof findQuestionAnswer.answer === 'number';
+              typeof findQuestionAnswer.answer === "number";
           }
           break;
       }
 
       if (!isValid) {
         errors.push({
-          source: { pointer: 'data/attributes/answers/' + q.questionId },
-          detail: 'The value is not valid.',
+          source: { pointer: "data/attributes/answers/" + q.questionId },
+          detail: "The value is not valid.",
         });
       }
     }
@@ -106,14 +106,14 @@ app.post('/api/v1/survey/:id/answers', (request, response) => {
   }
 
   fs.readFile(
-    path.join(__dirname, './store/MovieReviews.json'),
-    'utf-8',
+    path.join(__dirname, "./store/MovieReviews.json"),
+    "utf-8",
     (error, data) => {
       if (error) {
         return response.status(500).send({
           errors: [
             {
-              title: 'Internal Server Error',
+              title: "Internal Server Error",
               detail: "Something went wrong. We're working on it!",
             },
           ],
@@ -121,20 +121,20 @@ app.post('/api/v1/survey/:id/answers', (request, response) => {
       }
 
       fs.writeFile(
-        path.join(__dirname, './store/MovieReviews.json'),
+        path.join(__dirname, "./store/MovieReviews.json"),
         JSON.stringify(request.body),
         () => {
           return response.status(201).send({
             data: {
-              type: 'surveyAnswers',
+              type: "surveyAnswers",
               attributes: {
                 answers: [
                   {
-                    questionId: 'film',
+                    questionId: "film",
                     answer: answers[0].answer,
                   },
                   {
-                    questionId: 'review',
+                    questionId: "review",
                     answer: answers[1].answer,
                   },
                 ],
