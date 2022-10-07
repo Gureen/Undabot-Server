@@ -17,6 +17,10 @@ const surveyFormAnswers = require(path.join(
 
 app.use(cors({ origin: "*" }));
 
+app.get("/", (req, res) => {
+  res.status(200).send("Hello server is running").end();
+});
+
 app.get("/api/v1/survey", (request, response) => {
   fs.readFile(
     path.join(__dirname, "./store/SurveyFormData.json"),
