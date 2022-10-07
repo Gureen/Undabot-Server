@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
-    "dev": "tsc --p tsconfig.server.json && node dist/server.js",
+    "start": "tsc --p tsconfig.server.json && node dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
